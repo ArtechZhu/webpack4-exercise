@@ -243,12 +243,217 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 new CleanWebpackPlugin(["dist"])
 ```
 
-
-
 ## devServer
+
+#### 安装
+
+```sh
+npm i -D webpack-dev-server
+```
+
+#### 配置
+
+```c#
+    devServer:{
+        //1.设置服务器要访问的基本目录
+        contentBase:path.resolve(__dirname,"dist"),
+        //2.设置服务器ip地址
+        host:'localhost',
+        //3.设置端口
+        port:8090,
+        //4.运行的时候自动打开浏览器，也可以直接在命令行加上 "--open"
+        open:true,
+        //更新时候自动刷新
+        inline:true,
+        //开启HMR
+        hot:true
+    },
+```
+
+#### 使用
+
+```sh
+运行：npx webpack-dev-server
+```
+
+对于HMR，需要在js和webpack.config.js中增加如下代码
+
+```c#
+js文件：
+if(module.hot){
+    module.hot.accept();
+}
+```
+
+```C#
+webpack.config.js文件：
+plugins:[
+	new webpack.HotModuleReplacementPlugin() //需要先引入webpack
+]
+```
 
 
 
 ## loaders
 
-### 
+加载器，转化器
+
+### 处理CSS
+
+#### 使用css-loader，style-loader
+
+##### 安装
+
+```sh
+npm i style-loader css-loader -D
+```
+
+##### 配置
+
+```c#
+webpack.config.js
+    module:{
+        rules:[
+            {
+                test:/\.css$/,
+                use:["style-loader","css-loader"]
+            }
+        ]
+    },
+```
+
+```c#
+在js文件中引入css文件
+import './src/css/a.css'
+```
+
+### 关于loader的写法
+
+```c#
+    module:{
+        rules:[
+            {
+                test:/\.css$/,
+                // use:["style-loader","css-loader"]  //1
+                // loader:["style-loader","css-loader"] //2
+                use:[
+                    {loader:'style-loader'},
+                    {loader:'css-loader'},
+                ]
+
+            }
+        ]
+    },
+```
+> 遇到后缀为.css的文件，webpack会先用 css-loader加载器去解析这个文件，遇到 import 等语句就将相应样式文件引入（所以没有css-loader，就没法解析这类语句），最后计算玩的css，将会使用 style-loader 生成一个内容为最终解析完的css代码的style标签，放到head标签里。
+
+*P.S.需要注意的是这里加载器在使用的时候，会从右往左一次调用（或者方式2的调用的话就是从下往上）*
+
+> css文件中的内容会被写入到html页面中，渲染的顺序根据在js中import/require的顺序。 
+
+### 处理图片
+
+#### 使用 url-loader，file-loader
+
+会影响样式的图片路径，js中引用的图片路径，但html中img标签不受影响（这个需要html-loader）
+
+> file-loader：可以解析项目中的url引入（不仅限于CSS），根据配置，将图片拷贝到相应的路径，再根据我们的配置，修改打包后文件引用路径，使之指向正确的文件。
+
+> url-loader：如果页面图片很多，会发很多http请求，会降低页面性能。url-loader会将引入的图片进行编码，生产dataURL。相当于把图片数据翻译成了一串字符。再把这串字符打包到文件中，最终只需要引入这个文件就能访问图片了。当然，如果图片较大，编码会消耗性能，因此url-loader提供了一个limit参数，小于limit字节的文件会被转为dataURL，大于limit的还会使用file-loader进行拷贝。 
+
+##### 安装
+
+```sh
+npm i -D file-loader url-loader
+```
+
+##### 配置
+
+```c#
+            {
+                test:/\.(jpg|jpeg|png|gif)$/,
+                exclude:/node_modules/,
+                use:[
+   
+                    {
+                        loader:"url-loader",
+                        options:{
+                            limit:200,
+                        }
+                    },
+                    {
+                        loader:"file-loader",
+                        options:{
+                            
+                            name:"[name].[ext]",
+                            outputPath:"img/"
+                        }
+                    },
+                ]
+            }
+```
+
+### 分离CSS
+
+#### 使用 extract-text-webpack-plugin
+
+##### 安装
+
+```sh
+npm i -D extract-text-webpack-plugin
+```
+
+##### 引入
+
+```c#
+const ExtractTextWebpackPlugin = require("extract-text-webpack-plugin");
+```
+
+##### 配置
+
+```c#
+plugins：new ExtractTextWebpackPlugin("/css/index.css");
+loaders：需要把原先 css-loader和style-loader调整下：
+	        {
+                test:/\.css$/,
+                // use:["style-loader","css-loader"] 
+                use:ExtractTextWebpackPlugin.extract({
+                    fallback:'style-loader',
+                    use:'css-loader'
+                })
+            },
+```
+
+
+
+---
+
+# Q：这里生成的js文件是没有压缩过的，那么怎么样可以压缩？
+
+```sh
+npx webpack --mode production
+这个是在webpack 4.x版本中开始
+```
+
+大家有没有看到过uglifyjs-webpack-plugin这个插件？一般现在网上，尤其是百度，你能搜索到的很多关于react、vue、webpack的，都会有这么个插件，
+
+***4.X版本开始，我们没有必要再用这个插件，当然，如果你要用也没关系，简单说明下***
+
+## 安装
+
+```sh
+npm install -D uglifyjs-webpack-plugin
+```
+
+## 引用
+
+```sh
+const UglifyjsWebpackPlugin= require('uglifyjs-webpack-plugin');
+```
+
+## 配置
+
+```c#
+plugins中增加：new UglifyjsWebpackPlugin(),
+```
+
