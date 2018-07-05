@@ -4,7 +4,7 @@ webpack4-exercise：常用插件、loaders，devServer，优化等 demo
 
 ----
 
-# webpack是什么
+# 1.webpack是什么
 
 打包工具（模块打包）
 
@@ -16,7 +16,7 @@ webpack4-exercise：常用插件、loaders，devServer，优化等 demo
 
 ---
 
-# webpack作用
+# 2.webpack作用
 
 1. 打包（把多个文件打包成一个js文件--->减少服务器压力、带宽）
 
@@ -26,7 +26,7 @@ webpack4-exercise：常用插件、loaders，devServer，优化等 demo
 
 ---
 
-# webpack 构成
+# 3.webpack 构成
 
        	1. 入口：entry
        	2. 出口：output
@@ -37,7 +37,7 @@ webpack4-exercise：常用插件、loaders，devServer，优化等 demo
 
 ---
 
-# 项目文件夹初始化
+# 4.项目文件夹初始化
 
 1. 创建src文件夹
 
@@ -49,7 +49,7 @@ webpack4-exercise：常用插件、loaders，devServer，优化等 demo
 
 ------
 
-# npm **包安装**
+# 5.npm **包安装**
 
 ```sh
 npm install {包名}@{版本号} [--save-dev]
@@ -60,21 +60,21 @@ npm install {包名}@{版本号} [--save-dev]
 
 -----
 
-# **webpack**
+# 6.**webpack**
 
-## 安装webpack，webpack-cli
+## 6.1.安装webpack，webpack-cli
 
 ```sh
 npm install webpack@4.14.0 webpack-cli@0.0.8-development -D
 ```
 
-## 使用
+## 6.2.使用
 
 ```sh
 npx webpack ./src/index.js --output ./dist/bundle.js
 ```
 
-## demo
+## 6.3.demo
 
 ```sh
 1. 在项目中新建 dist目录
@@ -83,7 +83,7 @@ npx webpack ./src/index.js --output ./dist/bundle.js
 以上打包方式，每次打这么多的命令，omg
 ```
 
-## 使用webpack.config.js
+## 6.4.使用webpack.config.js
 
 直接讲下面的点复制到IDE中进行说明
 
@@ -116,7 +116,7 @@ var config={
 }
 ```
 
-## demo：将npx webpack ./src/page/index/index.js --output ./dist/bundle.js以配置文件的形式来进行处理
+## 6.5.demo：将npx webpack ./src/page/index/index.js --output ./dist/bundle.js以配置文件的形式来进行处理
 
 ```sh
     // 1. 入口：entry
@@ -130,7 +130,7 @@ var config={
     },
 ```
 
-## 如何使用其他名字的webpack.config.js
+## 6.6.如何使用其他名字的webpack.config.js
 
 ```sh
 如自定义的配置js名称为：mywebpack.config.js，则使用方式为：
@@ -139,7 +139,7 @@ var config={
 
 ---
 
-# webpack 的零配置
+# 7.webpack 的零配置
 
 Webpack4 增加了零配置，用于反击parcel，因而有约定默认文件夹和文件命名要求，以实现零配置。
 
@@ -161,11 +161,11 @@ Webpack4 增加了零配置，用于反击parcel，因而有约定默认文件�
 
 ---
 
-# 练习讲解
+# 8.练习讲解
 
-## plugins
+## 8.1.plugins
 
-### html-webpack-plugin
+### 8.1.1.html-webpack-plugin
 
 *需要注意下，plugin后面没有s*
 
@@ -223,7 +223,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
     ],
 ```
 
-### clean-webpack-plugin
+### 8.1.2.clean-webpack-plugin
 
 #### 安装
 
@@ -243,7 +243,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 new CleanWebpackPlugin(["dist"])
 ```
 
-## devServer
+## 8.2.devServer
 
 #### 安装
 
@@ -294,11 +294,11 @@ plugins:[
 
 
 
-## loaders
+## 8.3.oaders
 
 加载器，转化器
 
-### 处理CSS
+### 8.3.1.处理CSS
 
 #### 使用css-loader，style-loader
 
@@ -327,7 +327,7 @@ webpack.config.js
 import './src/css/a.css'
 ```
 
-### 关于loader的写法
+### 8.3.2.关于loader的写法
 
 ```c#
     module:{
@@ -345,17 +345,17 @@ import './src/css/a.css'
         ]
     },
 ```
-> 遇到后缀为.css的文件，webpack会先用 css-loader加载器去解析这个文件，遇到 import 等语句就将相应样式文件引入（所以没有css-loader，就没法解析这类语句），最后计算玩的css，将会使用 style-loader 生成一个内容为最终解析完的css代码的style标签，放到head标签里。
+> 遇到后缀为.css的文件，webpack会先用 css-loader加载器去解析这个文件，遇到 import 等语句就将相应样式文件引入（所以没有css-loader，就没法解析这类语句），最后计算完的css，将会使用 style-loader 生成一个内容为最终解析完的css代码的style标签，放到head标签里。
 
 *P.S.需要注意的是这里加载器在使用的时候，会从右往左一次调用（或者方式2的调用的话就是从下往上）*
 
 > css文件中的内容会被写入到html页面中，渲染的顺序根据在js中import/require的顺序。 
 
-### 处理图片
+### 8.3.3.处理图片
 
 #### 使用 url-loader，file-loader
 
-会影响样式的图片路径，js中引用的图片路径，但html中img标签不受影响（这个需要html-loader）
+[看下webpack官方对于url-loader这个加载器的说明](https://webpack.js.org/loaders/url-loader/)
 
 > file-loader：可以解析项目中的url引入（不仅限于CSS），根据配置，将图片拷贝到相应的路径，再根据我们的配置，修改打包后文件引用路径，使之指向正确的文件。
 
@@ -393,9 +393,9 @@ npm i -D file-loader url-loader
             }
 ```
 
-### 分离CSS
+### 8.3.4.分离CSS
 
-#### 使用 extract-text-webpack-plugin
+#### 8.3.4.1.使用 extract-text-webpack-plugin     【webpack4 使用 mini-css-extract-plugin】
 
 ##### 安装
 
@@ -423,6 +423,100 @@ loaders：需要把原先 css-loader和style-loader调整下：
                 })
             },
 ```
+
+***webpack4下，需要安装 extract-text-webpack-plugin@next***
+
+#### 8.3.4.2.使用 mini-css-extract-plugin
+
+##### 安装
+
+```SH
+
+```
+
+##### 引用
+
+```c#
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+```
+
+##### 配置
+
+```c#
+plugins:
+        new MiniCssExtractPlugin({
+            filename: "css/[name].css",
+            chunkFilename: "css/[id].css"
+        }),
+
+module.rules:
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            // you can specify a publicPath here
+                            // by default it use publicPath in webpackOptions.output
+                            publicPath: '../'
+                        }
+                    },
+                    "css-loader"
+                ]
+            },
+```
+
+### 8.3.5.使用less
+
+注意在js中引用less文件
+
+#### 安装
+
+```sh
+npm install -D less less-loader
+```
+
+#### 配置
+
+```c#
+            {
+                test: /\.less$/,
+                use:[
+                    {
+                        loader: devMode?"style-loader":MiniCssExtractPlugin.loader,
+                        options: {
+                            // you can specify a publicPath here
+                            // by default it use publicPath in webpackOptions.output
+                            // publicPath: '../'
+                        }
+                    },
+                    "css-loader",
+                    "less-loader"
+                ]
+            },
+```
+
+#### less语法
+
+```less
+@a:red;
+@b:white;
+#forless {
+    font-size: 30px;
+    color:@a;
+    span{
+        color:@b
+    }
+}
+```
+
+### 8.3.6.使用sass
+
+#### 安装
+
+#### 配置
+
+#### sass语法
 
 
 
