@@ -55,6 +55,26 @@ var config = {
                 ]
             },
             {
+                test: /\.scss$/,
+                // use: [
+                //     "style-loader", // creates style nodes from JS strings
+                //     "css-loader", // translates CSS into CommonJS
+                //     "sass-loader" // compiles Sass to CSS
+                // ]
+                use:[
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            // you can specify a publicPath here
+                            // by default it use publicPath in webpackOptions.output
+                            // publicPath: '../'
+                        }
+                    },
+                    "css-loader",
+                    "sass-loader"
+                ]
+            },
+            {
                 test: /\.(jpg|jpeg|png|gif)$/,
                 exclude: /node_modules/,
                 use: [
@@ -114,6 +134,7 @@ var config = {
             //     collapseWhitespace:true,
             //     removeAttributeQuotes:true
             // },
+            chunks:["p_index2"],
             filename: "index2.html"
         })
     ],

@@ -514,9 +514,41 @@ npm install -D less less-loader
 
 #### 安装
 
+```sh
+npm install sass-loader node-sass webpack --save-dev
+```
+
 #### 配置
 
+```c#
+
+```
+
 #### sass语法
+
+```scss
+$a:red;
+$b:blue;
+#forsass {
+    font-size: 30px;
+    color:$a;
+    span{
+        color:$b
+    }
+}
+```
+
+### 8.3.7 前缀处理器 postcss-loader
+
+
+
+#### 安装
+
+```sh
+npm i -D postcss-loader
+```
+
+#### 配置
 
 
 
@@ -550,4 +582,11 @@ const UglifyjsWebpackPlugin= require('uglifyjs-webpack-plugin');
 ```c#
 plugins中增加：new UglifyjsWebpackPlugin(),
 ```
+
+
+
+
+
+
+
 
