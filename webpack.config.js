@@ -3,8 +3,9 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
-const devMode = process.env.NODE_ENV == 'production'
+const PurifyCSSPlugin = require('purifycss-webpack');
+const glob = require('glob');
+const devMode = false;//process.env.NODE_ENV == 'production'
 var config = {
     // 1. 入口：entry
     entry: {
@@ -29,7 +30,7 @@ var config = {
                 // })
                 use: [
                     {
-                        loader: devMode?"style-loader":MiniCssExtractPlugin.loader,
+                        loader: devMode ? "style-loader" : MiniCssExtractPlugin.loader,
                         options: {
                             // you can specify a publicPath here
                             // by default it use publicPath in webpackOptions.output
@@ -41,9 +42,9 @@ var config = {
             },
             {
                 test: /\.less$/,
-                use:[
+                use: [
                     {
-                        loader: devMode?"style-loader":MiniCssExtractPlugin.loader,
+                        loader: devMode ? "style-loader" : MiniCssExtractPlugin.loader,
                         options: {
                             // you can specify a publicPath here
                             // by default it use publicPath in webpackOptions.output
@@ -61,7 +62,7 @@ var config = {
                 //     "css-loader", // translates CSS into CommonJS
                 //     "sass-loader" // compiles Sass to CSS
                 // ]
-                use:[
+                use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
@@ -72,10 +73,10 @@ var config = {
                     },
                     "css-loader",
                     {
-                        loader:'postcss-loader',
-                        options:{
-                            config:{
-                                path:"./postcss.config.js"
+                        loader: 'postcss-loader',
+                        options: {
+                            config: {
+                                path: "./postcss.config.js"
                             }
                         }
                     },
@@ -102,6 +103,10 @@ var config = {
     },
     // 4. 插件：plugins
     plugins: [
+        new PurifyCSSPlugin({
+            // Give paths to parse for rules. These should be absolute!
+            paths: glob.sync(path.join(__dirname, 'src/*.html')),
+        }),
         // new ExtractTextWebpackPlugin('css/index.css'),
         new MiniCssExtractPlugin({
             filename: "css/[name].css",
@@ -142,7 +147,7 @@ var config = {
             //     collapseWhitespace:true,
             //     removeAttributeQuotes:true
             // },
-            chunks:["p_index2"],
+            chunks: ["p_index2"],
             filename: "index2.html"
         })
     ],

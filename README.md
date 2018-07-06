@@ -294,7 +294,7 @@ plugins:[
 
 
 
-## 8.3.oaders
+## 8.3.loaders
 
 加载器，转化器
 
@@ -538,7 +538,7 @@ $b:blue;
 }
 ```
 
-### 8.3.7 前缀处理器 postcss-loader
+### 8.3.7.前缀处理器 postcss-loader
 
 postcss不是CSS预处理器，也不是后处理器，只是一个"插件工具"，针对postcss有很多实用的。
 
@@ -575,17 +575,74 @@ webpack.config.js
             }
        
 
-postcss.config.js
+需要自行增加一个配置文件：postcss.config.js
             module.exports = {
                 plugins: {
                     'autoprefixer': {},
                 }
             }
+            //-------------也可以使用require，但是需要plugins的值此时需要用数组------------------
+            module.exports = {
+                plugins: [
+                    require('autoprefixer')
+                ]
+            }
+```
+
+### 8.3.8.消除冗余CSS代码：purifycss
+
+#### 安装
+
+```sh
+npm install -D purifycss-webpack purify-css
+```
+
+#### 引用
+
+```c#
+const PurifyCSSPlugin = require('purifycss-webpack');
+```
+
+> 需要引入一个额外的包：glob
+>
+> 安装： npm i -D glob
+>
+> 引入：const glob = require('glob');
+
+#### 配置
+
+```
+new PurifyCSSPlugin({
+      // Give paths to parse for rules. These should be absolute!
+      paths: glob.sync(path.join(__dirname, 'app/*.html')),
+    })
+```
+
+### 8.3.9.babel-loader
+
+> - babel：是一个ES6转码器，可以将ES6代码转换为ES5代码，从而在现有环境执行，这意味着，你可以用ES6的方式编写程序，又不用担心现有环境知否支持。
+>
+> - - babel有3个阶段：解析 ---> 转换 ---> 生成 
+>
+> - babel-loader：加载器，同其他loader一样，实现对特定文件类型的处理。（webpack本身能够处理.js文件（自身只理解JavaScript），但无法对ES2015+的语法进行转换，babel-loader的作用正是对使用了ES2015+的语法的.js文件进行处理） 
+>
+> - babel-core：作用在于提供一系列的api，也就是说，当webpack使用babel-loader处理文件时，babel-loader实际上调用了babel-core的api，因此也必须安装babel-core。
+
+#### 安装
+
+```sh
+npm install babel-loader babel-core babel-preset-env -D
 ```
 
 
 
----
+#### 配置
+
+
+
+
+
+----
 
 # Q：这里生成的js文件是没有压缩过的，那么怎么样可以压缩？
 
