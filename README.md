@@ -540,15 +540,48 @@ $b:blue;
 
 ### 8.3.7 前缀处理器 postcss-loader
 
+postcss不是CSS预处理器，也不是后处理器，只是一个"插件工具"，针对postcss有很多实用的。
 
+不装插件的postcss，等于无差 （演示的时候，注意下，页面提供的代码实例，需要删除下，保留plugin部分即可）
+
+[POSTCSS 插件，git文档](https://github.com/postcss/postcss#plugins)
 
 #### 安装
 
 ```sh
 npm i -D postcss-loader
+npm install -D autoprefixer
 ```
 
 #### 配置
+
+```c#
+webpack.config.js 
+{
+                test: /\.scss$/,
+                use:[
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+
+                        }
+                    },
+                    "css-loader",
+                    //需要放在css-loader，style-loader等之前运行
+                    //但是需要再sass，less等预处理器之后运行
+                    'postcss-loader',
+                    "sass-loader"
+                ]
+            }
+       
+
+postcss.config.js
+            module.exports = {
+                plugins: {
+                    'autoprefixer': {},
+                }
+            }
+```
 
 
 
