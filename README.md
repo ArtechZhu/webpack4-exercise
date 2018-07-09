@@ -638,7 +638,7 @@ new PurifyCSSPlugin({
     })
 ```
 
-### 8.3.9.babel-loader
+### 8.3.9.babel-loader ：使用最新8.X版本（beta）
 
 > - babel：是一个ES6转码器，可以将ES6代码转换为ES5代码，从而在现有环境执行，这意味着，你可以用ES6的方式编写程序，又不用担心现有环境知否支持。
 >
@@ -651,18 +651,140 @@ new PurifyCSSPlugin({
 #### 安装
 
 ```sh
-npm install babel-loader babel-core babel-preset-env -D
+npm install "babel-loader@next" @babel/core @babel/preset-env -D
+```
+
+#### 配置
+
+```c#
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                      presets: ['@babel/preset-env']
+                    }
+                  }
+            }
+```
+
+#### 使用
+
+```c#
+var result = [4,5,6].map(n=>n**2);
+console.log("index.js:result=%o",result);
 ```
 
 
 
-#### 配置
+# 9.模块
+
+## 9.1 模块导出
+
+```js
+webpack.rules.js
+var rules = {};
+module.exports = rules;
+```
+
+> 模块导出方法：module.exports = {变量/函数/其他}
+>
+> 导出的是变量，那么在使用（require）的时候就是变量；导出的是函数，那么在require的时候就是函数
+
+## 9.2 模块实用
+
+```js
+webpack.config.js
+const rules = require("./webpack.rules.js"); //需要使用相对路径的形式来引用，否则会作为node的包来查找
+直接在webpack的配置中替代原先的rules
+modules:rules,
+```
+
+# 10. JSON的使用（git新分支@json-demo）
+
+在webpack 3.X之前，使用json需要引入 "json-loader"，从webpack3.X开始，webpack不再需要引入该包。
+
+> 这里有个注意事项，对于json文件，在webpack.config.js中使用的时候，只能通过require的形式来导入，而在其他业务js文件中，可以通过require，也可以通过import
+
+```JS
+webpack.config.js：
+const json = require('./myJson.json')
+
+其他业务js：除了上面的方式外，还可以用import
+import json from './myJson.json';
+```
 
 
 
+# 11. 第三方插件
+
+## 11.1.使用第三方插件（git新分支@thirdplugin-demo）
+
+方法有：
+
+​	1.直接在js中通过require的方式来使用
+
+​	2.通过externals来引用，但需要在页面上通过CDN来引用
+
+​	3.在webpack.config.js中，通过webpack.ProvidePlugin({})插件来配置使用，但依然需要先安装包，但不再需要require这个包。
+
+> 个人建议：
+>
+> 对于单个功能页面用到的第三方js库，可使用第一种方式
+>
+> 对于提供CDN包的js，建议使用第二种方式
+>
+> 对于需要全局使用的js，建议第三种
+>
+> - 第一种和第二种方式 的差异：
+>   - 如果在业务js中 进行了require第三方库，则不管有没有用到该库，该库都会被打包到业务js块中；
+>   - 如果通过第三种方式引入的包（因为业务js不再需要require），则只要该业务js中没有用到该库，该库就不会被打包到该业务js块中去。
+> - ***如果在webpack.config.js中写了 externals，则使用的包仅为cdn下的（即不会引用本地包-->也就是该第三方包不会打包到业务js中）***
+
+安装包（jquery为例）
+
+```sh
+npm install -D jquery@1.12.4
+```
+
+方式1：直接在js中通过require引用，之后就可以用$这个符号来表示jQuery了
+
+```js
+const $ = require('jquery');
+```
 
 
-----
+
+方式2：通过cdn引用+配置externals
+
+```js
+webpack.config
+    externals:{
+        "jquery":"jQuery" //注意大小写，值是"jQuery"(或者"window.jQuery")
+    },
+```
+
+
+
+方式3：配置webpack.config.js
+
+```js
+Plugins：
+        new webpack.ProvidePlugin({
+            "$":"jquery"
+        }),
+```
+
+## 11.2.提取第三方js库（或者自己写的库）
+
+> 在webpack3.x 使用 CommonChunksPlugin，在4.x开始，使用 splitChunksPlugin
+
+### webpack.config中使用 splitChunksPlugin
+
+
+
+---
 
 # Q：这里生成的js文件是没有压缩过的，那么怎么样可以压缩？
 

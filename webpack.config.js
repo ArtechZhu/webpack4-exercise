@@ -6,16 +6,25 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const PurifyCSSPlugin = require('purifycss-webpack');
 const glob = require('glob');
 const devMode = false;//process.env.NODE_ENV == 'production'
+
+// const webpackEntryJson = require("./webpack.entry.json");
+
+
 var config = {
     // 1. 入口：entry
     entry: {
         p_index: "./src/index.js",
         p_index2: "./src/index2.js",
+        jquery:"jquery"
     },
+
+    // externals:{
+    //     "jquery":"window.jQuery"
+    // },
     // 2. 出口：output
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "[name].bundle.js"
+        filename: "[name].bundle.[hash].js",
     },
     // 3. 加载器：loaders
     module: {
@@ -98,11 +107,26 @@ var config = {
                     }
 
                 ]
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env']
+                        }
+                    }
+                ]
             }
         ]
     },
     // 4. 插件：plugins
     plugins: [
+        new webpack.ProvidePlugin({
+            "$":"jQuery"
+        }),
         new PurifyCSSPlugin({
             // Give paths to parse for rules. These should be absolute!
             paths: glob.sync(path.join(__dirname, 'src/*.html')),
@@ -168,30 +192,28 @@ var config = {
     },
     // 6. 模式：mode
     mode: "development",
-    // optimization: {
-    //     splitChunks: {
-    //       cacheGroups: {
-    //         aStyles: {
-    //           name: 'foo',
-    //           test: (m,c,entry = 'a') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
-    //           chunks: 'all',
-    //           enforce: true
-    //         },
-    //         bStyles: {
-    //           name: 'bar',
-    //           test: (m,c,entry = 'b') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
-    //           chunks: 'all',
-    //           enforce: true
-    //         },
-    //         cStyles: {
-    //             name: 'bar',
-    //             test: (m,c,entry = 'c') => m.constructor.name === 'CssModule' && recursiveIssuer(m) === entry,
-    //             chunks: 'all',
-    //             enforce: true
-    //           }
-    //       }
-    //     }
-    //   }
+    optimization: {
+        splitChunks: {
+          chunks: 'async',
+          minSize: 30000,
+          minChunks: 1,
+          maxAsyncRequests: 5,
+          maxInitialRequests: 3,
+          automaticNameDelimiter: '~',
+          name: true,
+          cacheGroups: {
+            vendors: {
+              test: /[\\/]node_modules[\\/]/,
+              priority: -10
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true
+            }
+          }
+        }
+    }
 }
 
 module.exports = config;
