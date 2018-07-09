@@ -431,7 +431,7 @@ loaders：需要把原先 css-loader和style-loader调整下：
 ##### 安装
 
 ```SH
-
+npm install mini-css-extract-plugin -D
 ```
 
 ##### 引用
@@ -521,7 +521,27 @@ npm install sass-loader node-sass webpack --save-dev
 #### 配置
 
 ```c#
+            {
+                test: /\.scss$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
 
+                        }
+                    },
+                    "css-loader",
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            config: {
+                                path: "./postcss.config.js"
+                            }
+                        }
+                    },
+                    "sass-loader"
+                ]
+            },
 ```
 
 #### sass语法
