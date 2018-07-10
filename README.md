@@ -671,7 +671,7 @@ new PurifyCSSPlugin({
 
 > - babel：是一个ES6转码器，可以将ES6代码转换为ES5代码，从而在现有环境执行，这意味着，你可以用ES6的方式编写程序，又不用担心现有环境知否支持。
 >
-> - - babel有3个阶段：解析 ---> 转换 ---> 生成 
+> - babel有3个阶段：解析 ---> 转换 ---> 生成 
 >
 > - babel-loader：加载器，同其他loader一样，实现对特定文件类型的处理。（webpack本身能够处理.js文件（自身只理解JavaScript），但无法对ES2015+的语法进行转换，babel-loader的作用正是对使用了ES2015+的语法的.js文件进行处理） 
 >
@@ -810,6 +810,40 @@ Plugins：
 > 在webpack3.x 使用 CommonChunksPlugin，在4.x开始，使用 splitChunksPlugin
 
 ### webpack.config中使用 splitChunksPlugin
+
+```js
+config.optimization属性中进行配置:
+    optimization: {
+        splitChunks: {
+            //表示显示块的范围，有三个可选值：initial(初始块)、async(按需加载块)、all(全部块)，默认为all;
+            //chunks:'initial' (初始块：只对入口块做处理)
+            chunks: 'async',
+            //表示在压缩前的最小模块大小，默认为0，单位：byte；
+            minSize: 30000,//这里表示 30Kb
+            //表示被引用次数，默认为1
+            minChunks: 1,
+            //最大的按需(异步)加载次数，默认为1；
+            maxAsyncRequests: 5,
+            //最大的初始化加载次数，默认为1；
+            maxInitialRequests: 3,
+            automaticNameDelimiter: '~',
+            //拆分出来块的名字(Chunk Names)，默认(true)由块名和hash值自动生成；
+            name: true,
+            //缓存组
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        }
+    }
+```
 
 
 

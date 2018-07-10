@@ -125,7 +125,7 @@ var config = {
     // 4. 插件：plugins
     plugins: [
         new webpack.BannerPlugin({
-            banner: "这里是bannerplugin生成的banner：'hash:[hash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]'", // the banner as string, it will be wrapped in a comment
+            banner: "这里是bannerplugin生成的banner：'hash:[hash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]'", 
             raw: false, // if true, banner will not be wrapped in a comment
             entryOnly: false, // if true, the banner will only be added to the entry chunks
             // test: string | RegExp | Array,
