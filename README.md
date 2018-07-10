@@ -243,6 +243,35 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 new CleanWebpackPlugin(["dist"])
 ```
 
+
+
+### 8.1.3.banner-plugin
+
+#### 安装
+
+安装有 webpack即可
+
+#### 引用
+
+```js
+const webpack = require('webpack');
+```
+
+#### 使用
+
+```js
+        new webpack.BannerPlugin({
+            banner: "这里是bannerplugin生成的banner：'hash:[hash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]'", 
+            raw: false, // if true, banner will not be wrapped in a comment
+            entryOnly: false, // if true, the banner will only be added to the entry chunks
+            // test: string | RegExp | Array,
+            // include: string | RegExp | Array,
+            exclude: /node_modules/,
+        }),
+```
+
+
+
 ## 8.2.devServer
 
 #### 安装

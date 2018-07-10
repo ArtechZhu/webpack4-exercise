@@ -15,7 +15,7 @@ var config = {
     entry: {
         p_index: "./src/index.js",
         p_index2: "./src/index2.js",
-        jquery:"jquery"
+        jquery: "jquery"
     },
 
     // externals:{
@@ -124,8 +124,16 @@ var config = {
     },
     // 4. 插件：plugins
     plugins: [
+        new webpack.BannerPlugin({
+            banner: "这里是bannerplugin生成的banner：'hash:[hash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]'", // the banner as string, it will be wrapped in a comment
+            raw: false, // if true, banner will not be wrapped in a comment
+            entryOnly: false, // if true, the banner will only be added to the entry chunks
+            // test: string | RegExp | Array,
+            // include: string | RegExp | Array,
+            exclude: /node_modules/,
+        }),
         new webpack.ProvidePlugin({
-            "$":"jQuery"
+            "$": "jQuery"
         }),
         new PurifyCSSPlugin({
             // Give paths to parse for rules. These should be absolute!
@@ -194,24 +202,24 @@ var config = {
     mode: "development",
     optimization: {
         splitChunks: {
-          chunks: 'async',
-          minSize: 30000,
-          minChunks: 1,
-          maxAsyncRequests: 5,
-          maxInitialRequests: 3,
-          automaticNameDelimiter: '~',
-          name: true,
-          cacheGroups: {
-            vendors: {
-              test: /[\\/]node_modules[\\/]/,
-              priority: -10
-            },
-            default: {
-              minChunks: 2,
-              priority: -20,
-              reuseExistingChunk: true
+            chunks: 'async',
+            minSize: 30000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            automaticNameDelimiter: '~',
+            name: true,
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
             }
-          }
         }
     }
 }
