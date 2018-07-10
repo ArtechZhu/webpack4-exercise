@@ -15,7 +15,7 @@ var config = {
     entry: {
         p_index: "./src/index.js",
         p_index2: "./src/index2.js",
-        jquery: "jquery"
+        // jquery: "jquery"
     },
 
     // externals:{
