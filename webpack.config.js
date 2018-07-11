@@ -203,19 +203,29 @@ var config = {
     optimization: {
         splitChunks: {
             chunks: 'async',
-            minSize: 30000,
+            minSize: 3000,
             minChunks: 1,
             maxAsyncRequests: 5,
             maxInitialRequests: 3,
             automaticNameDelimiter: '~',
             name: true,
             cacheGroups: {
-                vendors: {
+                common: {
                     test: /[\\/]node_modules[\\/]/,
-                    priority: -10
+                    priority: -10,
+                    chunks:"initial",
+                    name:"vendors"
+                },
+                customerA: {
+                    test: /js\/core.js/,
+                    priority: 10,
+                    chunks:"initial",
+                    minChunks:21,
+                    minSize:1,
+                    name:"mycore"
                 },
                 default: {
-                    minChunks: 2,
+                    minChunks: 1,
                     priority: -20,
                     reuseExistingChunk: true
                 }
