@@ -675,8 +675,12 @@ plugins中增加：new UglifyjsWebpackPlugin(),
 
 
 
+# Q：下载下来的项目，无法运行
 
+因为不包含node_modules，所以无法运行，项目下载下来后，需要执行以下命令：
 
+```sh
+npm install
+```
 
-
-
+之后，会自动根据 package.json中项，进行包安装
