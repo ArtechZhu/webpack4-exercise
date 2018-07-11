@@ -829,7 +829,7 @@ config.optimization属性中进行配置:
             automaticNameDelimiter: '~',
             //拆分出来块的名字(Chunk Names)，默认(true)由块名和hash值自动生成；
             name: true,
-            //缓存组
+            //缓存组（可以覆写splitChunks.*中的配置）
             cacheGroups: {
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
