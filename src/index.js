@@ -6,11 +6,10 @@ require('./less/a.less');
 // const $ = require('jquery');
 // import $ from 'jquery';
 var ajs = require('./js/a.js');
-
+ajs();
 const corejs = require('./js/core.js');
-corejs();
 
-console.log(jquery);
+// console.log(jquery);
 document.write("here is index.html  1111");
 // var el =document.getElementById("app");
 // el.innerHTML = "index here is    hahaha";

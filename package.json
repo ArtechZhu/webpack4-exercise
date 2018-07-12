@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/ArtechChu/webpack4-exercise#readme",
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.52",
-    "@babel/preset-env": "^7.0.0-beta.52",
+    "@babel/core": "^7.0.0-beta.53",
+    "@babel/preset-env": "^7.0.0-beta.53",
     "autoprefixer": "^8.6.5",
     "babel-loader": "^8.0.0-beta.4",
     "clean-webpack-plugin": "^0.1.19",
@@ -28,6 +28,7 @@
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "glob": "^7.1.2",
+    "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^1.12.4",
     "less": "^3.0.4",

@@ -102,7 +102,6 @@ var config = {
                             fallback: "file-loader",
                             limit: 100,
                             outputPath: "imgs/",
-                            publicPath: "../imgs/"
                         }
                     }
 
@@ -119,7 +118,18 @@ var config = {
                         }
                     }
                 ]
-            }
+            },
+            {
+                test: /\.html$/,
+                use: [ {
+                  loader: 'html-loader',
+                  options: {
+                    minimize: true,
+                    removeComments: false,
+                    collapseWhitespace: false
+                  }
+                }],
+              }
         ]
     },
     // 4. 插件：plugins
@@ -217,12 +227,12 @@ var config = {
                     name:"vendors"
                 },
                 customerA: {
-                    test: /js\/core.js/,
-                    priority: 10,
-                    chunks:"initial",
-                    minChunks:21,
+                    test: path.resolve(__dirname,"src/js/core.js"),
+                    priority: 12,
+                    chunks:"all",
+                    minChunks:3,
                     minSize:1,
-                    name:"mycore"
+                    name:true
                 },
                 default: {
                     minChunks: 1,

@@ -382,7 +382,7 @@ import './src/css/a.css'
 
 ### 8.3.3.处理图片
 
-#### 使用 url-loader，file-loader
+#### 8.3.3.1.使用 url-loader，file-loader
 
 [看下webpack官方对于url-loader这个加载器的说明](https://webpack.js.org/loaders/url-loader/)
 
@@ -421,6 +421,38 @@ npm i -D file-loader url-loader
                 ]
             }
 ```
+
+#### 8.3.3.2.使用html-loader
+
+主要用于处理html中的img标签
+
+##### 安装
+
+```sh
+npm install -D html-loader
+```
+
+##### 配置
+
+```js
+            {
+                test: /\.html$/,
+                use: [ {
+                  loader: 'html-loader',
+                  options: {
+                    minimize: true,
+                    removeComments: false,
+                    collapseWhitespace: false
+                  }
+                }],
+              }
+```
+
+> 页面使用说明：
+>
+> img:src:  "./images/1.jpg"：相对路径则html-loader会对此路径进行处理。
+>
+> img:src:  "/image/1.jpg"：绝对路径，则不会对该图进行处理。
 
 ### 8.3.4.分离CSS
 
@@ -721,7 +753,7 @@ module.exports = rules;
 >
 > 导出的是变量，那么在使用（require）的时候就是变量；导出的是函数，那么在require的时候就是函数
 
-## 9.2 模块实用
+## 9.2 模块使用
 
 ```js
 webpack.config.js
@@ -828,9 +860,10 @@ config.optimization属性中进行配置:
             maxInitialRequests: 3,
             automaticNameDelimiter: '~',
             //拆分出来块的名字(Chunk Names)，默认(true)由块名和hash值自动生成；
+            //这个可以用 path/正则/方法/字符串(chunk名)
             name: true,
             //缓存组（可以覆写splitChunks.*中的配置）
-            //只要有一个限制不满足条件，则该组不生效
+            //优化的生效仅再满足阈值后才生效，只要有不满足的阈值，则该配置就不生效
             cacheGroups: {
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
