@@ -80,14 +80,11 @@ npx webpack ./src/index.js --output ./dist/bundle.js
 1. 在项目中新建 dist目录
 2. 在目录中新建一个index.html，并引用 bundle.js
 3. 在打包生成之后，浏览器打开index.html
-以上打包方式，每次打这么多的命令，omg
 ```
 
 ## 6.4.使用webpack.config.js
 
-直接讲下面的点复制到IDE中进行说明
-
-<a href="#webpack 构成">按住ctrl点击跳转 webpack 构成</a> 
+<a href="#webpack 构成">跳转 webpack 构成</a> 
 
 ```sh
 var config={
@@ -116,7 +113,9 @@ var config={
 }
 ```
 
-## 6.5.demo：将npx webpack ./src/page/index/index.js --output ./dist/bundle.js以配置文件的形式来进行处理
+## 6.5.demo：
+
+将npx webpack ./src/page/index/index.js --output ./dist/bundle.js以配置文件的形式来进行处理
 
 ```sh
     // 1. 入口：entry
@@ -147,7 +146,7 @@ Webpack4 增加了零配置，用于反击parcel，因而有约定默认文件�
 
 ```sh
 1.注释掉webpack.config.js内容
-2.直接运行 npx webpack      会报错
+2.直接运行 npx webpack      //会报错
 3.在src目录下新建index.js
 4.再次运行 npx webpack
 5.会在dist目录下生成 main.js
@@ -243,13 +242,11 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 new CleanWebpackPlugin(["dist"])
 ```
 
-
-
 ### 8.1.3.banner-plugin
 
 #### 安装
 
-安装有 webpack即可
+安装有 webpack即可，该插件已整合到webpack4中
 
 #### 引用
 
@@ -270,7 +267,7 @@ const webpack = require('webpack');
         }),
 ```
 
-
+[hash]，[chunkhash]，[name]，[filebase]，[query]，[file]为插件提供的占位符（关键字：placeholder）
 
 ## 8.2.devServer
 
@@ -285,17 +282,18 @@ npm i -D webpack-dev-server
 ```c#
     devServer:{
         //1.设置服务器要访问的基本目录
-        contentBase:path.resolve(__dirname,"dist"),
+        contentBase:path.resolve(__dirname,"dist"), //∵本次培训我们将dist作为了项目的输出目录
         //2.设置服务器ip地址
         host:'localhost',
         //3.设置端口
         port:8090,
         //4.运行的时候自动打开浏览器，也可以直接在命令行加上 "--open"
+        //如：webpack-dev-server --open
         open:true,
         //更新时候自动刷新
         inline:true,
         //开启HMR
-        hot:true
+        hot:true 
     },
 ```
 
@@ -356,7 +354,7 @@ webpack.config.js
 import './src/css/a.css'
 ```
 
-### 8.3.2.关于loader的写法
+### 8.3.2.关于loader的写法（一共3种）
 
 ```c#
     module:{
@@ -365,8 +363,8 @@ import './src/css/a.css'
                 test:/\.css$/,
                 // use:["style-loader","css-loader"]  //1
                 // loader:["style-loader","css-loader"] //2
-                use:[
-                    {loader:'style-loader'},
+                use:[ //3，这种方式方便直接在loader后面指定options
+                    {loader:'style-loader'}, //指定options：{loader:'style-loader',options:{..}}
                     {loader:'css-loader'},
                 ]
 
@@ -374,11 +372,11 @@ import './src/css/a.css'
         ]
     },
 ```
-> 遇到后缀为.css的文件，webpack会先用 css-loader加载器去解析这个文件，遇到 import 等语句就将相应样式文件引入（所以没有css-loader，就没法解析这类语句），最后计算完的css，将会使用 style-loader 生成一个内容为最终解析完的css代码的style标签，放到head标签里。
+> 解释：遇到后缀为.css的文件，webpack会先用 css-loader加载器去解析这个文件，遇到 import 等语句就将相应样式文件引入（所以没有css-loader，就没法解析这类语句），最后计算完的css，将会使用 style-loader 生成一个内容为最终解析完的css代码的style标签，放到head标签里。
 
-*P.S.需要注意的是这里加载器在使用的时候，会从右往左一次调用（或者方式2的调用的话就是从下往上）*
+*P.S.需要注意的是这里加载器在使用的时候，会从右往左一次调用（或者方式3调用的话就是从下往上）*
 
-> css文件中的内容会被写入到html页面中，渲染的顺序根据在js中import/require的顺序。 
+> css文件中的内容会被写入到html页面中，渲染的顺序是根据在js中import/require的顺序来定。 
 
 ### 8.3.3.处理图片
 
@@ -388,7 +386,9 @@ import './src/css/a.css'
 
 > file-loader：可以解析项目中的url引入（不仅限于CSS），根据配置，将图片拷贝到相应的路径，再根据我们的配置，修改打包后文件引用路径，使之指向正确的文件。
 
-> url-loader：如果页面图片很多，会发很多http请求，会降低页面性能。url-loader会将引入的图片进行编码，生产dataURL。相当于把图片数据翻译成了一串字符。再把这串字符打包到文件中，最终只需要引入这个文件就能访问图片了。当然，如果图片较大，编码会消耗性能，因此url-loader提供了一个limit参数，小于limit字节的文件会被转为dataURL，大于limit的还会使用file-loader进行拷贝。 
+> url-loader：如果页面图片很多，会发很多http请求，会降低页面性能。url-loader会将引入的图片进行编码，生成dataURL。相当于把图片数据翻译成了一串字符。再把这串字符嵌入到文件中，最终只需要引入这个文件就能访问图片了。当然，如果图片较大，编码会消耗性能，因此url-loader提供了一个limit参数，小于limit字节的文件会被转为dataURL，大于limit的还会使用file-loader进行拷贝。 
+>
+> P.S.因为目前版本的url-loader内部使用了file-loader，所以这2个loader需要一起安装。
 
 ##### 安装
 
@@ -424,7 +424,7 @@ npm i -D file-loader url-loader
 
 #### 8.3.3.2.使用html-loader
 
-主要用于处理html中的img标签
+主要用于处理html中的img标签的src内容
 
 ##### 安装
 
@@ -450,7 +450,7 @@ npm install -D html-loader
 
 > 页面使用说明：
 >
-> img:src:  "./images/1.jpg"：相对路径则html-loader会对此路径进行处理。
+> img:src:  "./images/1.jpg"：相对路径，则html-loader会对此路径进行处理。
 >
 > img:src:  "/image/1.jpg"：绝对路径，则不会对该图进行处理。
 
@@ -485,9 +485,13 @@ loaders：需要把原先 css-loader和style-loader调整下：
             },
 ```
 
+如果直接运行打包程序，则会报错，因为webpack4下已经不建议使用该插件，但如果硬要使用则需要安装@next版本，如下，之后直接再次运行打包程序即可成功执行。
+
 ***webpack4下，需要安装 extract-text-webpack-plugin@next***
 
-#### 8.3.4.2.使用 mini-css-extract-plugin
+
+
+#### 8.3.4.2.使用 mini-css-extract-plugin    【推荐】
 
 ##### 安装
 
@@ -529,7 +533,7 @@ module.rules:
 
 ### 8.3.5.使用less
 
-注意在js中引用less文件
+注意在js中引用less文件：import '../xx/xx.less'
 
 #### 安装
 
@@ -570,6 +574,8 @@ npm install -D less less-loader
     }
 }
 ```
+
+> 个人建议在学习sass/less的时候，直接学习sass。less语法做了解即可
 
 ### 8.3.6.使用sass
 
@@ -621,9 +627,9 @@ $b:blue;
 
 ### 8.3.7.前缀处理器 postcss-loader
 
-postcss不是CSS预处理器，也不是后处理器，只是一个"插件工具"，针对postcss有很多实用的。
+postcss不是***CSS预处理器，也不是后处理器，只是一个"插件工具"***，针对postcss有很多实用的。
 
-不装插件的postcss，等于无差 （演示的时候，注意下，页面提供的代码实例，需要删除下，保留plugin部分即可）
+postcss需要同它的插件一起使用，否则就跟没装该loader是一个样的。
 
 [POSTCSS 插件，git文档](https://github.com/postcss/postcss#plugins)
 
@@ -631,7 +637,7 @@ postcss不是CSS预处理器，也不是后处理器，只是一个"插件工具
 
 ```sh
 npm i -D postcss-loader
-npm install -D autoprefixer
+npm install -D autoprefixer //postcss-loader插件之一：作用相当于csshack
 ```
 
 #### 配置
@@ -701,7 +707,7 @@ new PurifyCSSPlugin({
 
 ### 8.3.9.babel-loader ：使用最新8.X版本（beta）
 
-> - babel：是一个ES6转码器，可以将ES6代码转换为ES5代码，从而在现有环境执行，这意味着，你可以用ES6的方式编写程序，又不用担心现有环境知否支持。
+> - babel：是一个ES6转码器，可以将ES6代码转换为ES5代码，从而在现有环境执行，这意味着，你可以用ES6的方式编写程序，又不用担心现有环境是否支持。
 >
 > - babel有3个阶段：解析 ---> 转换 ---> 生成 
 >
@@ -713,6 +719,7 @@ new PurifyCSSPlugin({
 
 ```sh
 npm install "babel-loader@next" @babel/core @babel/preset-env -D
+为什么安装方式是之一的？（关键字：npm install详情请自行搜索，tips：最终效果为会生成一个独立的文件夹进行安装相关的包）
 ```
 
 #### 配置
@@ -733,7 +740,7 @@ npm install "babel-loader@next" @babel/core @babel/preset-env -D
 #### 使用
 
 ```c#
-var result = [4,5,6].map(n=>n**2);
+var result = [4,5,6].map(n=>n**2); //ES6
 console.log("index.js:result=%o",result);
 ```
 
@@ -764,7 +771,7 @@ modules:rules,
 
 # 10. JSON的使用（git新分支@json-demo）
 
-在webpack 3.X之前，使用json需要引入 "json-loader"，从webpack3.X开始，webpack不再需要引入该包。
+在webpack 3.X之前，使用json需要引入 "json-loader"，从webpack3.X开始，webpack不再需要引入该包，需注意。
 
 > 这里有个注意事项，对于json文件，在webpack.config.js中使用的时候，只能通过require的形式来导入，而在其他业务js文件中，可以通过require，也可以通过import
 
@@ -780,7 +787,7 @@ import json from './myJson.json';
 
 # 11. 第三方插件
 
-## 11.1.使用第三方插件（git新分支@thirdplugin-demo）
+## 11.1.使用第三方插件
 
 方法有：
 
@@ -792,15 +799,15 @@ import json from './myJson.json';
 
 > 个人建议：
 >
-> 对于单个功能页面用到的第三方js库，可使用第一种方式
+> 对于单个功能页面用到的第三方js库，可使用第 1 种方式
 >
-> 对于提供CDN包的js，建议使用第二种方式
+> 对于提供CDN包的js，建议使用第 2 种方式
 >
-> 对于需要全局使用的js，建议第三种
+> 对于需要全局使用的js，建议第 3 种
 >
-> - 第一种和第二种方式 的差异：
+> - 第 1 种和第 2 种方式 的差异：
 >   - 如果在业务js中 进行了require第三方库，则不管有没有用到该库，该库都会被打包到业务js块中；
->   - 如果通过第三种方式引入的包（因为业务js不再需要require），则只要该业务js中没有用到该库，该库就不会被打包到该业务js块中去。
+>   - 如果通过第 3 种方式引入的包（因为业务js不再需要require），则只要该业务js中没有用到该库，该库就不会被打包到该业务js块中去。
 > - ***如果在webpack.config.js中写了 externals，则使用的包仅为cdn下的（即不会引用本地包-->也就是该第三方包不会打包到业务js中）***
 
 安装包（jquery为例）
@@ -890,9 +897,11 @@ npx webpack --mode production
 这个是在webpack 4.x版本中开始
 ```
 
-大家有没有看到过uglifyjs-webpack-plugin这个插件？一般现在网上，尤其是百度，你能搜索到的很多关于react、vue、webpack的，都会有这么个插件，
+对于 uglifyjs-webpack-plugin 这个插件，一般现在网上，尤其是百度，你能搜索到的很多关于react、vue、webpack的，都会有这么个插件：
 
-***4.X版本开始，我们没有必要再用这个插件，当然，如果你要用也没关系，简单说明下***
+​	***4.X版本开始，我们没有必要再用这个插件，当然，如果你要用也没关系，效果就是"生产模式下打包"***
+
+uglifyjs-webpack-plugin demo：各位可以实际对比下效果
 
 ## 安装
 
